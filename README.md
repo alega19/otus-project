@@ -1,6 +1,6 @@
 # otus-project
 
-This web application allow searching for communities (vk.com) with audience that you are interested in.
+This web application allows searching for communities (vk.com) with audience that you are interested in.
 
 
 ## Requirements:
