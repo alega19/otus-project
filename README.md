@@ -14,5 +14,5 @@ This web application allow searching for communities (vk.com) with audience that
 1. Execute schema.sql
 2. Execute insert_empty_communities.sql
 3. Get access_token (https://vk.com/dev/access_token) and insert it into "account" table (you'll need account on vk.com)
-4. Start vkapi/main.py. This app collect information about the communities.
+4. Start vkapi/main.py. This app collects information about the communities via VK API.
 5. Start Django app in vksearch/
