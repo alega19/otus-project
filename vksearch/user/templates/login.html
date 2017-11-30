@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+{% block title %}Authentication{% endblock %}
+{% block content %}
+<div>
+    <form method="post" action="{% url 'user:login' %}" enctype="application/x-www-form-urlencoded">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Log In">
+    </form>
+</div>
+{% endblock %}

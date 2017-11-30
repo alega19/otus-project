@@ -1,0 +1,162 @@
+{% extends '_base.html' %}
+{% load url_replace %}
+{% block title %}Communities{% endblock %}
+{% block style %}
+{{ block.super }}
+.range input {
+    width: 6rem;
+    font-size: 1rem;
+}
+#members div {
+    display: inline-block;
+}
+#profile div {
+    display: inline-block;
+}
+#countries {
+    display: none;
+
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+
+    border: 4px solid black;
+    padding: 2rem;
+
+    background-color: white;
+}
+#x {
+    position: absolute;
+    right: 3rem;
+    font-size: 2rem;
+    font-family: courier;
+    font-weight: bold;
+    cursor: pointer;
+}
+#countries .content {
+    position: absolute;
+    top: 4rem;
+    bottom: 1rem;
+    overflow-y: scroll;
+}
+.tag {
+    display: inline-block;
+
+    white-space: nowrap;
+
+    margin: 2px;
+    padding: 2px;
+    line-height: 2rem;
+    border-radius: 4px;
+    background-color: #b3edff;
+}
+#selected-counties span {
+    display: inline-block;
+
+    white-space: nowrap;
+
+    margin: 2px;
+    padding: 2px;
+    line-height: 2rem;
+    border-radius: 4px;
+    background-color: #b3edff;
+}
+table {
+    border-collapse: collapse;
+}
+{% endblock %}
+{% block script %}
+    onload = function(){
+        var selectedCounties = document.getElementById('selected-counties');
+        var countriesBtn = document.getElementById('countries-btn');
+        var countries = document.getElementById('countries');
+        var x = document.getElementById('x');
+        var chbxList = countries.getElementsByTagName('input');
+        var updateCountries = function(){
+            var tags = '';
+            for (var i=0; i<chbxList.length; i++){
+                if (chbxList[i].checked) tags+='<span>'+chbxList[i].parentNode.firstChild.textContent+'</span>';
+            }
+            selectedCounties.innerHTML = tags;
+        };
+        x.onclick = function(){countries.style.display='none';updateCountries();};
+        countriesBtn.onclick = function(){countries.style.display='block';};
+        updateCountries();
+    }
+{% endblock %}
+{% block content %}
+<div>
+    <form method="get" action="{% url 'vksearch:communities' %}" enctype="application/x-www-form-urlencoded">
+        <div style="" id="members">
+            <div><label>Members:</label> <span class="range">{{ form.min_members }} - {{ form.max_members }}</span></div>
+            <div><label>Audience:</label> <span class="range">{{ form.min_audience }} - {{ form.max_audience }}</span></div>
+            <div><label>Audience (%):</label> <span class="range">{{ form.min_audience_perc }} - {{ form.max_audience_perc }}</span></div>
+        </div>
+        <div id="profile">
+            <div>
+                {{ form.age_ranges }}
+            </div>
+            <div>
+                {{ form.sex }}
+                {{ form.apps }}
+                <input id="countries-btn" type="button" value="Select countries">
+            </div>
+            <div id="selected-counties"></div>
+        </div>
+        <div id="countries">
+            <div id="x">X</div>
+            <div class="content">{% for f in form.countries %}<label class="tag">{{f.choice_label}} {{ f.tag }}</label>{% endfor %}</div>
+        </div>
+        <div>Order by: {{ form.ordering }}</div>
+        <div>Inverted: {{ form.inverted }}</div>
+        <input type="submit" value="Search">
+    </form>
+</div>
+<div>
+    {% if communities and communities.has_previous %}<a href="?{% url_replace page=communities.previous_page_number %}"><span>&lt; Previous</span></a>{% endif %}
+    {% if communities %}<span>{{ communities.number }}</span>{% endif %}
+    {% if communities and communities.has_next %}<a href="?{% url_replace page=communities.next_page_number %}"><span>Next &gt;</span></a>{% endif %}
+</div>
+<div>
+    <table>
+        <tr>
+            <th>ID/Link</th>
+            <th>Type</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Verified</th>
+            <th>Age limit</th>
+            <th>Status</th>
+            <th>Site</th>
+            <th>Members</th>
+            <th>Audience</th>
+            <th>Audience (%)</th>
+        </tr>
+    {% for c in communities %}
+        <tr>
+            <td><a href="https://vk.com/{% if c.type.name == 'PUBLIC_PAGE' %}public{%else%}club{%endif%}{{ c.vkid }}" target="_blank">{{ c.vkid }}</a></td>
+            <td>{% if c.type.name == 'PUBLIC_PAGE' %}P
+                {% elif c.type.name == 'OPEN_GROUP' %}G+
+                {% elif c.type.name == 'CLOSED_GROUP' %}G-
+                {% elif c.type.name == 'PRIVATE_GROUP' %}Gx
+                {% else %}N/A{% endif %}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.description }}</td>
+            <td>{% if c.verified %}✔{% endif %}</td>
+            <td>{% if c.age_limit > 0 %}{{ c.age_limit }}+{% endif %}</td>
+            <td>{{ c.status }}</td>
+            <td>{{ c.site }}</td>
+            <td>{{ c.members }}</td>
+            <td>{{ c.audience_sum }}</td>
+            <td>{{ c.audience_perc }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="11">Nothing found</td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}

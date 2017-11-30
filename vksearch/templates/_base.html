@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        {% block style %}
+        body {
+            margin: 0;
+            font-size: 20px;
+        }
+        #header {
+            padding-top: 2rem;
+            height: 5rem;
+            background: #7e7e7e;
+            text-align: center;
+        }
+        {% endblock %}
+    </style>
+    <script>{% block script %}{% endblock %}</script>
+</head>
+<body>
+<div id="header">
+    <div id="userblock" class="row">
+            {% if user.is_authenticated %}
+                <div>
+                    <div><a href="{% url 'user:settings' %}">{{ user.email }}</a></div>
+                    <form method="post" action="{% url 'user:logout' %}" enctype="application/x-www-form-urlencoded">
+                        {% csrf_token %}
+                        <input type="submit" value="Logout">
+                    </form>
+                </div>
+            {% else %}
+                <a href="{% url 'user:login' %}">Log In</a>
+                <a href="{% url 'user:registration' %}">Sign Up</a>
+            {% endif %}
+        </div>
+</div>
+{% block content %}{% endblock %}
+</body>
+</html>

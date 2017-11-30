@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div>
+    <a href="{% url 'vksearch:communities' %}"><button>&lt;--Back</button></a>
+    <form method="post" action="{% url 'user:settings' %}" enctype="application/x-www-form-urlencoded">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Save">
+    </form>
+</div>
+{% endblock %}
