@@ -1,9 +1,17 @@
+import json
+from os.path import join, dirname, abspath
+
+
+with open(join(dirname(abspath(__file__)), '..', 'secrets.json')) as _fd:
+    _SECRETS = json.loads(_fd.read())
+
+
 DATABASE = {
-    'host': '127.0.0.1',
-    'port': 5432,
-    'dbname': 'ovk',
-    'user': 'postgres',
-    'password': 'postgres'
+    'host': _SECRETS['db_host'],
+    'port': _SECRETS['db_port'],
+    'dbname': _SECRETS['db_name'],
+    'user': _SECRETS['db_user'],
+    'password': _SECRETS['db_pass']
 }
 
 WORKERS_PER_TOKEN = 1

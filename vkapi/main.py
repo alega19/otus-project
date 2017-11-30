@@ -20,7 +20,7 @@ class App:
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     App().start()
 
 
