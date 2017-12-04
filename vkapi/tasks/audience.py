@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import math
 from collections import namedtuple
@@ -173,6 +174,7 @@ class TaskToUpdateAudience(BaseTask):
 
     async def handle(self, session, token):
         if self.blank:
+            await asyncio.sleep(20)
             return
         url = self._url(token)
         async with session.get(url) as resp:
