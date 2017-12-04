@@ -53,7 +53,7 @@ CREATE TABLE "audience" (
 
 CREATE TABLE "account" (
   "token" text PRIMARY KEY,
-  "active" boolean NOT NULL
+  "active" boolean NOT NULL DEFAULT TRUE
 );
 
 
